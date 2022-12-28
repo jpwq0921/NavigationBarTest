@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -42,16 +44,16 @@ public class RestaurantList extends AppCompatActivity {
         //toolbar=findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        //drawerLayout = findViewById(R.id.restdrawer);
+        drawerLayout = findViewById(R.id.restdrawer);
 
-       /* actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.nav_open,R.string.nav_close);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.nav_open,R.string.nav_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        navigationView = findViewById(R.id.nav_exit);
-        navigationView.setNavigationItemSelectedListener(navSelected);*/
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(navSelected);
 
     }
     @Override
@@ -105,7 +107,7 @@ public class RestaurantList extends AppCompatActivity {
             return false;
         }
     };
-    /*NavigationView.OnNavigationItemSelectedListener navSelected = new NavigationView.OnNavigationItemSelectedListener() {
+    NavigationView.OnNavigationItemSelectedListener navSelected = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             int id = item.getItemId();
@@ -118,7 +120,7 @@ public class RestaurantList extends AppCompatActivity {
                                         break;
                     case R.id.nav_add: fragment = new DetailsFragment();
                         break;
-                    case R.id.nav_exit: fragment = new AboutFragment();
+                    case R.id.nav_about: fragment = new AboutFragment();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.restaurantFragmentContainer,fragment).commit();
@@ -126,5 +128,5 @@ public class RestaurantList extends AppCompatActivity {
             }
             return true;
         }
-    };*/
+    };
 }

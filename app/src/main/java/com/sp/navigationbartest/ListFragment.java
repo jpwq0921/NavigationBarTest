@@ -129,13 +129,17 @@ public class ListFragment extends Fragment {
             holder.age.setText(helper.getuserAge(cursor));
             holder.location.setText(helper.getuserLocation(cursor));
             holder.gender.setText(helper.getuserGender(cursor));
-            holder.competitive.setText(helper.getuserComp(cursor));
+            //holder.competitive.setText(helper.getuserComp(cursor));
             holder.platform.setText(helper.getuserPlatform(cursor));
             holder.genre.setText(helper.getuserGenre(cursor));
 
             /*byte[] image = helper.getuserImage(cursor);
             Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0 , image.length);
             holder.imageView.setImageBitmap(bitmap);*/
+
+            byte[] ige = helper.getuserImage(cursor);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(ige,0,ige.length);
+            holder.imageView.setImageBitmap(bitmap);
 
 
             //holder.competitive.setText(helper.getuserComp(cursor));
@@ -194,9 +198,9 @@ public class ListFragment extends Fragment {
             private TextView location = null;
             private ImageView icon = null;
             private TextView gender = null;
-            private TextView competitive = null;
+            //private TextView competitive = null;
             private ImageView imageView = null;
-            private String image = null;
+            //private String image = null;
             private TextView platform = null;
             private TextView genre = null;
             public RestaurantHolder(View itemView){
@@ -206,7 +210,7 @@ public class ListFragment extends Fragment {
                 //icon = itemView.findViewById(R.id.icon);
                 gender = itemView.findViewById(R.id.userGender);
                 location = itemView.findViewById(R.id.userLocation);
-                competitive = itemView.findViewById(R.id.userComp);
+                //competitive = itemView.findViewById(R.id.userComp);
                 imageView = itemView.findViewById(R.id.icon);
                 platform = itemView.findViewById(R.id.userPlatform);
                 genre = itemView.findViewById(R.id.userGenre);

@@ -76,6 +76,7 @@ public class DetailsFragment extends Fragment {
     private GPSTracker gpsTracker;
     private double latitude = 0.0d;
     private double longitude = 0.0d;
+    Bitmap selectedImageBitmap = null;
 
     private RestaurantHelper helper = null;
     public  String restaurantID = null;
@@ -184,7 +185,7 @@ public class DetailsFragment extends Fragment {
         buttonSave.setOnClickListener(onSave);
         location= view.findViewById(R.id.location);
         gender= view.findViewById(R.id.gender);
-        competitiveness=view.findViewById(R.id.competitiveness);
+        //competitiveness=view.findViewById(R.id.competitiveness);
         //Platform
         platform = view.findViewById(R.id.platform);
         gamegenre=view.findViewById(R.id.genre);
@@ -222,7 +223,7 @@ public class DetailsFragment extends Fragment {
                     Intent data = result.getData();
                     if (data != null && data.getData() != null) {
                         Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap = null;
+                        //Bitmap selectedImageBitmap = null;
                         try {
                             selectedImageBitmap = MediaStore.Images.Media.getBitmap(
                                     ((RestaurantList)getActivity()).getContentResolver(), selectedImageUri);
@@ -234,18 +235,6 @@ public class DetailsFragment extends Fragment {
                 }
             });
 
-    /*ActivityResultLauncher<String> mGetContet = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri result) {
-                    if(result != null){
-                        imageView.setImageURI(result);
-                        image =result.toString();
-
-                    }
-                }
-            });*/
 
 
     public void clear(){
@@ -253,10 +242,10 @@ public class DetailsFragment extends Fragment {
         age.setText("");
         location.setText("");
         gender.clearCheck();
-        competitiveness.clearCheck();
+        //competitiveness.clearCheck();
         platform.clearCheck();
         gamegenre.clearCheck();
-        //imageView.setImageDrawable(null);
+        imageView.setImageBitmap(null);
         //image = null;
     }
 
@@ -272,15 +261,16 @@ public class DetailsFragment extends Fragment {
 
 
 
-        /*byte[] iage = helper.getuserImage(c);
+
+        byte[] iage = helper.getuserImage(c);
         Bitmap bitmap = BitmapFactory.decodeByteArray(iage, 0 , iage.length);
         imageView.setImageBitmap(bitmap);
 
         //Uri myUri = Uri.parse(helper.getuserImage(c));
         //imageView.setImageURI(myUri);
-        Bitmap bitmaps = BitmapFactory.decodeFile(image);
+        //Bitmap bitmaps = BitmapFactory.decodeFile(image);
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        /*ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmaps.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         bytesImage = byteArrayOutputStream.toByteArray();*/
 
@@ -293,7 +283,7 @@ public class DetailsFragment extends Fragment {
             gender.check(R.id.female);
         }
 
-        if(helper.getuserComp(c).equals("Low")){
+        /*if(helper.getuserComp(c).equals("Low")){
             competitiveness.check(R.id.low);
         } else if(helper.getuserComp(c).equals("Low-Mid")){
             competitiveness.check(R.id.low_mid);
@@ -303,7 +293,7 @@ public class DetailsFragment extends Fragment {
             competitiveness.check(R.id.mid_high);
         } else if(helper.getuserComp(c).equals("High")){
             competitiveness.check(R.id.high);
-        }
+        }*/
 
         if(helper.getuserPlatform(c).equals("PC")){
             platform.check(R.id.pc);
@@ -336,18 +326,22 @@ public class DetailsFragment extends Fragment {
         latitude = helper.getLatitude(c);
         longitude = helper.getLongitude(c);
         locationn.setText(String.valueOf(latitude)+ " , " + String.valueOf(longitude));
+        Log.i(TAG,"menu items");
 
 
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        Log.i(TAG,"menu items");
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.details_option, menu);
+        inflater.inflate(R.menu.option, menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+        Log.i(TAG,"menu items");
         if(item.getItemId() == R.id.get_location){
             if (gpsTracker.canGetLocation()){
                 latitude = gpsTracker.getLatitude();
@@ -377,6 +371,10 @@ public class DetailsFragment extends Fragment {
             String platformtype = "";
             String genreType ="";
 
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            selectedImageBitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+            byte[] bArray = bos.toByteArray();
+
 
 
 
@@ -389,7 +387,7 @@ public class DetailsFragment extends Fragment {
                     break;
             }
 
-            switch (competitiveness.getCheckedRadioButtonId()) {
+            /*switch (competitiveness.getCheckedRadioButtonId()) {
                 case R.id.low:
                     competitiveType = "Low";
                     break;
@@ -409,7 +407,7 @@ public class DetailsFragment extends Fragment {
                 case R.id.high:
                     competitiveType = "High";
                     break;
-            }
+            }*/
 
             switch (platform.getCheckedRadioButtonId()) {
                 case R.id.pc:
@@ -478,9 +476,9 @@ public class DetailsFragment extends Fragment {
             bundle.putString("genre",genreType);*/
 
             if(restaurantID == null ){
-                helper.insert(nameStr,ageStr,locationStr,genderType, competitiveType, platformtype, genreType, latitude, longitude);
+                helper.insert(nameStr,ageStr,locationStr, genderType, platformtype, genreType, latitude, longitude, bArray );
             } else {
-                helper.update(restaurantID, nameStr, ageStr, locationStr, genderType , competitiveType, platformtype, genreType, latitude, longitude);
+                helper.update(restaurantID, nameStr, ageStr, locationStr ,genderType, platformtype, genreType, latitude,longitude, bArray);
             }
 
             //getParentFragmentManager().setFragmentResult("detailToListKey", bundle);

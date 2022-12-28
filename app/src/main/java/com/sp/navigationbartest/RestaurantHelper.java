@@ -23,7 +23,7 @@ public class RestaurantHelper extends SQLiteOpenHelper
     {
         //will bbe called once when the database is not created
         db.execSQL("CREATE TABLE restaurants_table (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " userName TEXT, userAge TEXT, userLocation TEXT, userGender TEXT, userComp TEXT, userPlatform TEXT, userGenre TEXT, lat REAL, lon REAL );");
+                " userName TEXT, userAge TEXT, userLocation TEXT, userGender TEXT ,  userPlatform TEXT, userGenre TEXT, lat REAL, lon REAL, userImage BLOB );");
     }
 
     @Override
@@ -38,7 +38,7 @@ public class RestaurantHelper extends SQLiteOpenHelper
     {
         return(getReadableDatabase().rawQuery(
                 "SELECT _id, userName, userAge, userLocation," +
-                        " userGender,  userComp, userPlatform, userGenre, lat, lon FROM restaurants_table ORDER BY userName", null));
+                        "    userGender,userPlatform, userGenre, lat, lon, userImage FROM restaurants_table ORDER BY userName", null));
     }
 
     /*Read all records from restaurants_table*/
@@ -47,12 +47,12 @@ public class RestaurantHelper extends SQLiteOpenHelper
 
         return (getReadableDatabase().rawQuery(
                 "SELECT _id, userName, userAge, userLocation, " +
-                        "userGender, userComp, userPlatform, userGenre, lat, lon FROM restaurants_table WHERE _ID = ?", args));
+                        "   userGender,userPlatform,  userGenre, lat, lon, userImage FROM restaurants_table WHERE _ID = ?", args));
     }
 
     /* Write a record into restaurants_table*/
     public void insert(String userName, String userAge,
-                       String userLocation, String userGender, String userComp, String userPlatform, String userGenre, double lat, double lon)
+                       String userLocation ,String userGender, String userPlatform, String userGenre, double lat, double lon, byte[] userImage)
     {
         ContentValues cv = new ContentValues();
 
@@ -60,27 +60,28 @@ public class RestaurantHelper extends SQLiteOpenHelper
         cv.put("userAge", userAge);
         cv.put("userLocation", userLocation);
         cv.put("userGender", userGender);
-        cv.put("userComp", userComp);
+        //cv.put("userComp", userComp);
         cv.put("userPlatform", userPlatform);
         cv.put("userGenre", userGenre);
-        //cv.put("userImage", userImage);
+        cv.put("userImage", userImage);
         cv.put("lat", lat);
         cv.put("lon", lon);
+
 
         getWritableDatabase().insert("restaurants_table", "userName", cv);
     }
 
-    public void update(String id, String userName, String userAge, String userLocation, String userGender, String userComp, String userPlatform, String userGenre, double lat, double lon){
+    public void update(String id, String userName, String userAge, String userLocation,String userGender, String userPlatform, String userGenre, double lat, double lon, byte[] userImage){
         ContentValues cv = new ContentValues();
         String[] args = {id};
         cv.put("userName", userName);
         cv.put("userAge", userAge);
         cv.put("userLocation", userLocation);
         cv.put("userGender", userGender);
-        cv.put("userComp", userComp);
+        //cv.put("userComp", userComp);
         cv.put("userPlatform", userPlatform);
         cv.put("userGenre", userGenre);
-        //cv.put("userImage", userImage);
+        cv.put("userImage", userImage);
         cv.put("lat", lat);
         cv.put("lon", lon);
 
@@ -103,10 +104,11 @@ public class RestaurantHelper extends SQLiteOpenHelper
     public String getuserGender(Cursor c){
         return (c.getString(4));
     }
-    public String getuserComp(Cursor c){return (c.getString(5));}
-    public String getuserPlatform(Cursor c){return (c.getString(6));}
-    public String getuserGenre(Cursor c){return (c.getString(7));}
+    //public String getuserComp(Cursor c){return (c.getString(5));}
+    public String getuserPlatform(Cursor c){return (c.getString(5));}
+    public String getuserGenre(Cursor c){return (c.getString(6));}
     //public byte[] getuserImage(Cursor c){return (c.getBlob(8));}
-    public double getLatitude(Cursor c){return (c.getDouble(8));}
-    public double getLongitude (Cursor c){return (c.getDouble(9));}
+    public double getLatitude(Cursor c){return (c.getDouble(7));}
+    public double getLongitude (Cursor c){return (c.getDouble(8));}
+    public byte[] getuserImage(Cursor c){return (c.getBlob(9));}
 }

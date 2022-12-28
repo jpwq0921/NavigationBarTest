@@ -104,7 +104,7 @@ public class GPSTracker extends Service implements LocationListener {
         }
     }
 
-    public boolean CanGetLocation() {
+    public boolean canGetLocation() {
         checkGPSPermissions();
         return canGetLocation;
     }
@@ -159,18 +159,10 @@ public class GPSTracker extends Service implements LocationListener {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent callGPSSettingIntent = new Intent(
-                                        Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                 mContext.startActivity(callGPSSettingIntent);
                             }
                         });
-        alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent callGPSSettingIntent = new Intent(
-                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        mContext.startActivity(callGPSSettingIntent);
-                    }
-                });
         alertDialogBuilder.setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

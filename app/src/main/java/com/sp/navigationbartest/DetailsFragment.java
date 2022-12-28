@@ -1,5 +1,7 @@
 package com.sp.navigationbartest;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,9 +19,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,6 +34,7 @@ import android.widget.RadioGroup;
 import android.content.Context;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.ChipGroup;
@@ -62,6 +67,7 @@ public class DetailsFragment extends Fragment {
     private ImageView imageView;
     private Button button;
     int SELECT_PICTURE = 200;
+    Bitmap bitmap;
 
     private String image;
     private byte[] bytesImage;
@@ -163,6 +169,7 @@ public class DetailsFragment extends Fragment {
     public void onDestroyView(){
         super.onDestroyView();
         helper.close();
+        gpsTracker.stopUsingGPS();
     }
 
 
@@ -191,9 +198,9 @@ public class DetailsFragment extends Fragment {
                 imageChooser();
             }
         });
-        //locationn = view.findViewById(R.id.locationn);
+        locationn = view.findViewById(R.id.locationn);
 
-        //gpsTracker = new GPSTracker(getContext());
+        gpsTracker = new GPSTracker(getContext());
 
 
 
@@ -215,7 +222,7 @@ public class DetailsFragment extends Fragment {
                     Intent data = result.getData();
                     if (data != null && data.getData() != null) {
                         Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap;
+                        Bitmap selectedImageBitmap = null;
                         try {
                             selectedImageBitmap = MediaStore.Images.Media.getBitmap(
                                     ((RestaurantList)getActivity()).getContentResolver(), selectedImageUri);
@@ -227,7 +234,7 @@ public class DetailsFragment extends Fragment {
                 }
             });
 
-    ActivityResultLauncher<String> mGetContet = registerForActivityResult(
+    /*ActivityResultLauncher<String> mGetContet = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
@@ -235,9 +242,10 @@ public class DetailsFragment extends Fragment {
                     if(result != null){
                         imageView.setImageURI(result);
                         image =result.toString();
+
                     }
                 }
-            });
+            });*/
 
 
     public void clear(){
@@ -253,15 +261,14 @@ public class DetailsFragment extends Fragment {
     }
 
 
+
     private void load(){
         Cursor c = helper.getById(restaurantID);
         c.moveToFirst();
         userName.setText(helper.getuserName(c));
         age.setText(helper.getuserAge(c));
         location.setText(helper.getuserLocation(c));
-        /*latitude = helper.getLatitude(c);
-        longitude = helper.getLongitude(c);
-        locationn.setText(String.valueOf(latitude)+ " , " + String.valueOf(longitude));*/
+
 
 
 
@@ -326,8 +333,35 @@ public class DetailsFragment extends Fragment {
             gamegenre.check(R.id.rhythm);
         }
 
+        latitude = helper.getLatitude(c);
+        longitude = helper.getLongitude(c);
+        locationn.setText(String.valueOf(latitude)+ " , " + String.valueOf(longitude));
 
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.details_option, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(item.getItemId() == R.id.get_location){
+            if (gpsTracker.canGetLocation()){
+                latitude = gpsTracker.getLatitude();
+                longitude = gpsTracker.getLongitude();
+                locationn.setText(String.valueOf(latitude)+ ", "+String.valueOf(longitude));
+
+                Toast.makeText(getContext().getApplicationContext(), "Your location is - \nLat: " + latitude + "\nLong: " +longitude, Toast.LENGTH_LONG ).show();
+            }
+            return (true);
         }
+        Log.i(TAG,"menu items");
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
 
@@ -444,9 +478,9 @@ public class DetailsFragment extends Fragment {
             bundle.putString("genre",genreType);*/
 
             if(restaurantID == null ){
-                helper.insert(nameStr,ageStr,locationStr,genderType, competitiveType, platformtype, genreType);
+                helper.insert(nameStr,ageStr,locationStr,genderType, competitiveType, platformtype, genreType, latitude, longitude);
             } else {
-                helper.update(restaurantID, nameStr, ageStr, locationStr, genderType , competitiveType, platformtype, genreType);
+                helper.update(restaurantID, nameStr, ageStr, locationStr, genderType , competitiveType, platformtype, genreType, latitude, longitude);
             }
 
             //getParentFragmentManager().setFragmentResult("detailToListKey", bundle);
